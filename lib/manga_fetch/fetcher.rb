@@ -20,6 +20,7 @@ class MangaFetch::Fetcher
     @main = @agent.page
   end
 
+  # fetch every images of the tome `num` loaded in `@main`
   def fetch_one(num: 1, download: false)
     link = "#{@main.uri.to_s}/#{num}"
     STDERR.puts "Fetching Tome [".blue + "#{num}".yellow + "]".blue if $verbose
@@ -34,9 +35,9 @@ class MangaFetch::Fetcher
       download_image(src: image) if download
       image
     end
-
   end
 
+  # fetch every images of the tomes `nums` loaded in `@main`
   def fetch_list(nums: nil, download: false)
     ones = []
     nums.map{|num| ones << fetch_one(num: num, download: download) }

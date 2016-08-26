@@ -4,13 +4,13 @@ class MangaFetch::Fetcher
   include MangaFetch::Downloader
 
   # Fetch some pages form the manga named like `name`
-  def fetch(name: "berserk", num: nil, download: false)
+  def fetch(name: "berserk", num: nil, download: false, dir: nil)
     init_agent(url: "http://www.mangareader.net/#{name}")
 
     images = if num.is_a? Fixnum
-      [ fetch_one(num: num, download: download) ]
+      [ fetch_one(num: num, download: download, dir: dir) ]
     elsif num.is_a? Enumerable
-      fetch_list(nums: num, download: download)
+      fetch_list(nums: num, download: download, dir: dir)
     end
   end
 
@@ -21,7 +21,7 @@ class MangaFetch::Fetcher
   end
 
   # fetch every images of the tome `num` loaded in `@main`
-  def fetch_one(num: 1, download: false)
+  def fetch_one(num: 1, download: false, dir: nil)
     link = "#{@main.uri.to_s}/#{num}"
     STDERR.puts "Fetching Tome [".blue + "#{num}".yellow + "]".blue if $verbose
     first_page = @agent.get(link)
@@ -32,15 +32,15 @@ class MangaFetch::Fetcher
       current_page = @agent.get "#{first_page.uri.to_s}/#{i}"
       image = current_page.at("#img")[:src]
       STDERR.puts "[#{download ? "D" : "S"}] -> ".blue + image.red if $verbose
-      download_image(src: image) if download
+      download_image(src: image, prefix: dir) if download
       image
     end
   end
 
   # fetch every images of the tomes `nums` loaded in `@main`
-  def fetch_list(nums: nil, download: false)
+  def fetch_list(nums: nil, download: false, dir: nil)
     ones = []
-    nums.map{|num| ones << fetch_one(num: num, download: download) }
+    nums.map{|num| ones << fetch_one(num: num, download: download, dir: dir) }
     ones
   end
 end

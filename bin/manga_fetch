@@ -1,11 +1,31 @@
 #!/usr/bin/env ruby
 
-$threads = 8
+require 'optparse'
 
-$verbose = true
-$debug = false
-$verbose = false if ENV["VERBOSE"] == "false"
-$debug = true if ENV["DEBUG"] == "true"
+argv = OptionParser.new do |opts|
+  opts.banner = "Usage: manga_scrap <name> <min..max>"
+  $threads = 8
+  $verbose = true
+  $debug = false
+  $verbose = false if ENV["VERBOSE"] == "false"
+  $debug = true if ENV["DEBUG"] == "true"
+
+  opts.on("--threads=N", "Number of threads to use") do |v|
+    $threads = Integer(v)
+  end
+
+  opts.on("--verbose", "Display infos on stderr (default)") do
+    $verbose = true
+  end
+
+  opts.on("--no-verbose", "Display infos on stderr") do
+    $verbose = true
+  end
+
+  opts.on("--debug", "Developper mode") do
+    $debug = true
+  end
+end.parse!
 
 if $debug
   require_relative "../lib/manga_fetch"
@@ -13,7 +33,7 @@ else
   require "manga_fetch"
 end
 
-m = ARGV[1].match(/\A(\d+)\.\.(\d+)\Z/)
+m = argv[1].match(/\A(\d+)\.\.(\d+)\Z/)
 nums = (m[1].to_i .. m[2].to_i).to_a
 
 nb_elem_by_list = (nums.size.to_f / $threads).ceil
@@ -24,7 +44,7 @@ lists.map.with_index do |current_nums, idx|
   t = Thread.new do
     STDERR.puts "Started #{idx+1} / #{$threads} threads" if $verbose
     bot = MangaFetch::Fetcher.new
-    list = bot.fetch(name: ARGV[0], num: current_nums, download: true).flatten.sort
+    list = bot.fetch(name: argv[0], num: current_nums, download: true).flatten.sort
   end
   sleep 0.5
   t

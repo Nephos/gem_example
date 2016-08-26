@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/manga_fetch"
+
+$verbose = true
+
+m = ARGV[1].match(/\A(\d+)\.\.(\d+)\Z/)
+nums = m[1].to_i .. m[2].to_i
+
+list = MangaFetch.fetch(name: ARGV[0], num: nums)
+puts list

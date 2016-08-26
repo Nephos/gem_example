@@ -1,13 +1,15 @@
 Gem::Specification.new do |s|
   s.name        = 'manga_fetch'
-  s.version     = '0.1.0'
+  s.version     = '0.2.0'
   s.date        = Time.now.getgm.to_s.split.first
   s.summary     = "manga_fetch is a gem to download a manga"
-  s.description = "initialization of the project with the basic features"
+  s.description = "add multi-thread and advanced features (download, opt parsing, ...)"
   s.authors     = ["Arthur Poulet"]
   s.email       = 'arthur.poulet@mailoo.org'
   s.files       = %w(
 lib/manga_fetch.rb
+lib/manga_fetch/fetcher.rb
+lib/manga_fetch/downloader.rb
 
 Gemfile
 Gemfile.lock

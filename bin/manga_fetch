@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/manga_fetch"
+$verbose = false if ENV["VERBOSE"] == "false"
+$debug = true if ENV["DEBUG"] == "true"
 
-$verbose = true
+if $debug
+  require_relative "../lib/manga_fetch"
+else
+  require "manga_fetch"
+end
 
 m = ARGV[1].match(/\A(\d+)\.\.(\d+)\Z/)
 nums = m[1].to_i .. m[2].to_i

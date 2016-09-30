@@ -26,7 +26,7 @@ class MangaFetch::Fetcher
     STDERR.puts "Fetching Tome [".blue + "#{num}".yellow + "]".blue if $verbose
     first_page = @agent.get(link)
 
-    last_page_num = first_page.at("#selectpage").text.split.last.to_i
+    last_page_num = first_page.at("#selectpage").text.split.last.to_i rescue (return nil)
     (1..last_page_num).map do |i|
       STDERR.puts "Fetching Tome [".blue + "#{num}".yellow + "] Image [".blue + "#{i} / #{last_page_num}".yellow + "]".blue if $verbose
       current_page = @agent.get "#{first_page.uri.to_s}/#{i}"
